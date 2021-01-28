@@ -6,8 +6,11 @@ from summarizer.models import Summary
 from .algorithms.scoring import scoring_algorithm, scoring_nepali
 from .algorithms.frequency import  frequency_nepali, frequency_algorithm
 
+from utils.algo import fetch_summary
+
 # updated import 
 from .utils.crawler import extract
+from utils.scrap_google import get_google_news
 
 def index(request):
     return render(request, 'summarizer/index.html')
@@ -18,45 +21,48 @@ def summarize_page(request):
     long_text = request.GET.get('long-text')
     # sentence_no = int(request.GET.get('number'))
     result_list = []
-
+    isURL = False
+    is_para = True
     if url:
         long_text = extract(url)  # text extraction using BS
-        original_text = url
-        # print(long_text)
-        # print(original_text)
+        original_text = str(url)
+        isURL = True
+        is_para = False
     else:
         original_text = long_text
 
+    fs = fetch_summary(long_text)
+    summ = fs.load_summary(long_text)
  
-    result_list = scoring_algorithm.run_summarization(long_text)
- 
-    summary = result_list
+    summary = summ
 
-    context = {'data': summary, 'original_text': original_text}
+    context = {'data': summary, 'original_text': original_text,'is_url':isURL,'is_para':is_para}
+
     return render(request, "summarizer/index.html", context)
 
 
 def summarize_nepali_page(request):
     url = request.GET.get('url')
     long_text = request.GET.get('long-text')
-    sentence_no = int(request.GET.get('number'))
-    algorithm = request.GET.get('algorithm')
+    # sentence_no = int(request.GET.get('number'))
+    # algorithm = request.GET.get('algorithm')
     result_list = []
-
+    isURL  = False
+    is_para = True
     if url:
-        long_text = extraction.extract(url)
+        long_text = extract(url)
         original_text = url
+        isURL = True
+        is_para = False
     else:
         original_text = long_text
 
-    if algorithm == '1':
-        result_list = scoring_nepali.scoring_main(long_text, sentence_no)
-    elif algorithm == '2':
-        result_list = frequency_nepali.frequency_main_nepali(long_text, sentence_no)
+    fs = fetch_summary(long_text)
+    summ = fs.load_summary(long_text)
+ 
+    summary = summ
 
-    summary = ' '.join(result_list)
-
-    context = {'data': summary, 'original_text': original_text}
+    context = {'data': summary, 'original_text': original_text,'is_url':isURL,'is_para':is_para}
     return render(request, "summarizer/index.html", context)
 
 

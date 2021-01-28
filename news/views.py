@@ -8,18 +8,24 @@ from .forms import DocumentForm
 from django.conf import settings
 from .pdf_summarizer import summarize_pdf
 
+from utils.scrap_google import get_google_news
+
+
+
 
 def index(request):
     if request.method == 'GET':
         source = request.GET.get('source')
+        print(source)
         news = []
         if source == "'yahoo'":
             news = bbc_scraping()
-        elif source == "'CNN'":
-            news = cnn_scraping()
-        elif source == "'Nagarik'":
-            news = nagarik_scraping()
-
+        elif source == "'google'":
+            print("google news ..")
+            news = get_google_news()
+            # for n in news:
+            #     print(n['summary'])
+            # print(news)
         context = {'source': source, 'news': news}
         return render(request, 'news/news.html', context)
 

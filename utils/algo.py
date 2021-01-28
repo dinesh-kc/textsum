@@ -176,3 +176,77 @@ def get_sent_score(TFIDF_scores,text_sents,doc_info):
         sentence_info.append(temp)
     return sentence_info
     
+
+
+class fetch_summary(object):
+    def __init__(self,text):
+        self.text_sents = sent_tokenize(text)
+
+        print("### tokenized sentences ###")
+        print(self.text_sents)
+
+
+        print("removes the special characters ")
+        self.text_sents_clean = [remove_string_special_characters(s) for s in self.text_sents] 
+        print(self.text_sents_clean)
+
+        print('\n\n\n')
+        print("#############")
+        print("Documents ")
+        self.doc_info  = get_doc(self.text_sents_clean)
+        print(self.doc_info)
+
+        print('\n\n\n')
+        print("#############")
+        print("frequency dict ")
+        self.freqDict_list = create_freq_dict(self.text_sents_clean)
+        print(self.freqDict_list)
+
+
+        print('\n\n\n')
+        print("#############")
+        print("TF value")
+
+        self.TF_scores = computeTF(self.doc_info,self.freqDict_list)
+        print(self.TF_scores)
+
+
+        print('\n\n\n')
+        print("#############")
+        print("IDF value")
+        self.IDF_scores = computeIDF(self.doc_info,self.freqDict_list)
+        print(self.IDF_scores) ## calculating the idf 
+
+
+        print('\n\n\n')
+        print("#############")
+        print("TFIDF value")
+        self.TFIDF_scores = computeTFIDF(self.TF_scores,self.IDF_scores)
+        print(self.TFIDF_scores)
+
+        print('\n\n\n')
+        print("#############")
+        print("Sentence Scoring ")
+        self.sentence_info = get_sent_score(self.TFIDF_scores,self.text_sents,self.doc_info) # returns sentence scoring 
+        print(self.sentence_info)
+
+        summ = get_summary(self.sentence_info)
+        print('\n\n\n')
+        print("#############")
+        print("Final Summary ")
+        print(summ)
+
+
+
+
+ 
+
+    def load_summary(self,text):
+        summ = get_summary(self.sentence_info)
+        return summ
+        # print('\n\n\n')
+        # print("#############")
+        # print("Final Summary ")
+        # print(summ)
+
+     

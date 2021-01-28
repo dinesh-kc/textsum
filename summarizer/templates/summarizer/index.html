@@ -18,9 +18,16 @@
     <div class="row">
 
         <div class="col-sm-6">
-            {% if original_text %}
-                <h3>Original Text/URL</h3>
-                {{ original_text }}
+            {% if original_text and is_url %}
+                <h3>Original URL</h3>
+        
+                    <a href="{{original_text}}" target="#">Go To link</a>
+           
+           
+              
+            {% elif original_text and is_para %}
+                <h3>Original Text</h3>
+                <p>{{ original_text }}  </p>
             {% else %}
                 {% include "summarizer/includes/text_input_form.html" %}
             {% endif %}
