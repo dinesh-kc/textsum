@@ -44,8 +44,10 @@ def file_form_upload(request):
 
             media_root = getattr(settings, 'MEDIA_ROOT', None)
             file_location = os.path.join(media_root, file_name)
-
-            summary = summarize_pdf(file_location, summary_p)
+            try:
+                summary = summarize_pdf(file_location, summary_p)
+            except:
+                return HttpResponse("<h1>Problem with encoding UTF-8 char with This pdf file </h1>")
             response = HttpResponse(summary, content_type='text/plain')
             response['Content-Disposition'] = 'attachment; filename={0}'.format(out_file_name)
 
